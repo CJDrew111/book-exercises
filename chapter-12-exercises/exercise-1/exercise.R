@@ -1,6 +1,10 @@
 # Exercise 1: analyzing avocado sales with the `tidyr` package
 
 # Load necessary packages (`tidyr`, `dplyr`, and `ggplot2`)
+library(tidyr)
+library(dplyr)
+install.packages("ggplot2")
+library(ggplot2)
 
 
 # Set your working directory using the RStudio menu:
@@ -8,11 +12,15 @@
 
 # Load the `data/avocado.csv` file into a variable `avocados`
 # Make sure strings are *not* read in as factors
+avacados <- read.csv("data/avocado.csv", stringsAsFactors = FALSE)
 
 
 # To tell R to treat the `Date` column as a date (not just a string)
 # Redefine that column as a date using the `as.Date()` function
 # (hint: use the `mutate` function)
+
+avacados <- avacados %>% 
+  mutate(Date = as.Date(Date))
 
 
 # The file had some uninformative column names, so rename these columns:
@@ -20,13 +28,23 @@
 # `X4225` to `large_haas`
 # `X4770` to `xlarge_haas`
 
+avacados <- avacados %>% 
+  rename(small_haas = X4046, large_haas = X4225, xlarge_haas = X4770)
+
+
 
 # The data only has sales for haas avocados. Create a new column `other_avos`
 # that is the Total.Volume minus all haas avocados (small, large, xlarge)
 
+avacados <- avacados %>% 
+  mutate(other_avos = Total.Volume - small_haas - large_haas - xlarge_haas)
+
 
 # To perform analysis by avocado size, create a dataframe `by_size` that has
 # only `Date`, `other_avos`, `small_haas`, `large_haas`, `xlarge_haas`
+
+by_size <- avacados %>% 
+  select(Date, other_avos, small_haas, large_haas, xlarge_haas)
 
 
 # In order to visualize this data, it needs to be reshaped. The four columns
@@ -37,9 +55,18 @@
 # data frame to the `gather()` function. `size_gathered` will only have 3 
 # columns: `Date`, `size`, and `volume`.
 
+size_gathered <- by_size %>% 
+  gather(other_avos, small_haas, large_haas, xlarge_haas, key = "size", value = "volume")
+
+View(size_gathered)
+
 
 # Using `size_gathered`, compute the average sales volume of each size 
 # (hint, first `group_by` size, then compute using `summarize`)
+
+size_gathered %>% 
+  group_by(size) %>% 
+  summarise(average = mean(volume))
 
 
 # This shape also facilitates the visualization of sales over time
