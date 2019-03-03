@@ -13,21 +13,35 @@ library("ggplot2")
 # Draw a column (bar) chart of diamonds cuts by price, with each bar filled by 
 # clarity. You should see a _stacked_ bar chart.
 
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut, y = price, fill = clarity), stat = "identity")
+
 
 # Draw the same chart again, but with each element positioned to "fill" the y axis
+
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut, y = price, fill = clarity), stat = "identity")
 
 
 # Draw the same chart again, but with each element positioned to "dodge" each other
 
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut, y = price, fill = clarity), stat = "identity", position = "dodge")
 
 # Draw a plot with point geometry with the x-position mapped to `cut` and the 
 # y-position mapped to `clarity`
 # This creates a "grid" grouping the points
 
+ggplot(data = diamonds) +
+  geom_point(mapping = aes(x = cut, y = clarity))
+
 
 # Use the "jitter" position adjustment to keep the points from all overlapping!
 # (This works a little better with a sample of diamond data, such as from the 
 # previous exercise).
+
+ggplot(data = sample_n(diamonds, 1000)) +
+  geom_point(mapping = aes(x = cut, y = clarity), position = "jitter")
 
 
 
